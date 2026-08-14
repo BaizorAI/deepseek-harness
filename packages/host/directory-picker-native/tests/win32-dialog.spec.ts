@@ -160,4 +160,17 @@ describe('pickWin32Directory', () => {
     }, 400)
     await expect(pickWin32Directory(controller.signal)).rejects.toThrow('native directory picker aborted')
   }, 30_000)
+
+  // The second pick of one process pins the koffi proto-name registry fix:
+  // a fresh callback proto per close throws `Duplicate type name`, which used
+  // to make every later picker open fail instead of closing.
+  it.skipIf(process.platform !== 'win32')('opens and abort-closes a second dialog in the same process', async () => {
+    const first = new AbortController()
+    setTimeout(() => first.abort(), 400)
+    await expect(pickWin32Directory(first.signal)).rejects.toThrow('native directory picker aborted')
+
+    const second = new AbortController()
+    setTimeout(() => second.abort(), 400)
+    await expect(pickWin32Directory(second.signal)).rejects.toThrow('native directory picker aborted')
+  }, 30_000)
 })

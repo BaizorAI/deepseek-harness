@@ -75,6 +75,8 @@ pnpm run dist:win:desktop
 ```
 
 安装程序默认按当前用户安装，提供安装模式选择页面与目录选择步骤，仅在所选模式或目录需要时申请提权，同时创建名为 `DeepSeek Harness` 的桌面与开始菜单快捷方式。生成的 `DeepSeek Harness Setup <版本>.exe` 位于 `apps/desktop/dist`，发布时未签名；配置发布证书之前，Windows SmartScreen 会提示发布者未知。
+
+根目录的 `build.sh` 脚本在打包命令之外补上工作区链接修复、Node 引擎检查与 Electron 二进制下载：`./build.sh` 构建 NSIS 安装程序，`./build.sh package` 只构建未封装应用，`./build.sh dev` 运行源码启动。请在 Git Bash 中从仓库根目录执行；WSL 也可用，但 PATH 需有 pnpm 与满足 `^22.19.0 || >=24.0.0` 的 Node，脚本会在安装前校验。
 ## 已知限制
 
 首个桌面装配使用回环 HTTP Host。renderer 和 Host 协议保持不变，因此后续可替换为 GUI 架构预留的 IPC carrier，而无需改动产品功能。

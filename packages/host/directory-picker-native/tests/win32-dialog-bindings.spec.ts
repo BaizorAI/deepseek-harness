@@ -37,6 +37,7 @@ interface ComWorld {
   freed: unknown[]
   released: string[]
   posted: { hwnd: unknown; message: number }[]
+  protoNames: string[]
   registered: number
   unregistered: number
   uninitialized: number
@@ -48,7 +49,7 @@ function comWorld(overrides: Partial<ComWorld> = {}): ComWorld {
     hasThreadDpi: true, supportedDpiContexts: [-4], enumThrows: false,
     path: 'C:\\选中\\directory',
     titles: [], options: [], dpiContexts: [], freed: [], released: [], posted: [],
-    registered: 0, unregistered: 0, uninitialized: 0,
+    protoNames: [], registered: 0, unregistered: 0, uninitialized: 0,
     ...overrides,
   }
 }
@@ -124,7 +125,16 @@ function installFakeKoffi(world: ComWorld): void {
           }
         },
       }),
-      proto: (declaration: string) => ({ declaration }),
+      proto: (declaration: string) => {
+        // koffi keeps one process-global proto name registry; re-registering
+        // a name throws, exactly like the real binding's second-call defect.
+        if (world.protoNames.includes(declaration)) {
+          const name = / Dsh(\w+)\(/u.exec(declaration)?.[1] ?? declaration
+          throw new Error(`Duplicate type name '${name}'`)
+        }
+        world.protoNames.push(declaration)
+        return { declaration }
+      },
       pointer: (type: unknown) => type,
       sizeof: (type: string) => { void type; return FAKE_POINTER_SIZE },
       view: (value: unknown, len: number): ArrayBuffer => {
@@ -261,6 +271,26 @@ describe('closeThreadWindows over the fake COM world', () => {
     const { closeThreadWindows } = await loadBindingsModule()
     await expect(closeThreadWindows(777)).rejects.toThrow('EnumThreadWindows refused')
     expect(world.unregistered).toBe(1)
+  })
+
+  it('closes a later dialog in the same process by reusing the one callback proto', async () => {
+    // koffi's proto name registry is process-global: a fresh `proto()` per
+    // call throws `Duplicate type name` on the second pick of one Host
+    // lifetime. The singleton keeps every later WM_CLOSE working.
+    const world = comWorld()
+    installFakeKoffi(world)
+    const { closeThreadWindows } = await loadBindingsModule()
+    await closeThreadWindows(777)
+    await closeThreadWindows(888)
+    expect(world.posted).toEqual([
+      { hwnd: { kind: 'hwnd', n: 1 }, message: WM_CLOSE },
+      { hwnd: { kind: 'hwnd', n: 2 }, message: WM_CLOSE },
+      { hwnd: { kind: 'hwnd', n: 1 }, message: WM_CLOSE },
+      { hwnd: { kind: 'hwnd', n: 2 }, message: WM_CLOSE },
+    ])
+    expect(world.registered).toBe(2)
+    expect(world.unregistered).toBe(2)
+    expect(world.protoNames).toEqual(['int __stdcall DshEnumThreadWndProc(void *hwnd, intptr lparam)'])
   })
 })
 

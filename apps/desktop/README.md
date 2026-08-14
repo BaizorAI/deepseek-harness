@@ -75,6 +75,8 @@ pnpm run dist:win:desktop
 ```
 
 The installer defaults to a per-user install, offers an install-mode page and a directory-choice step, elevates only when the chosen mode or directory requires it, and creates desktop and Start Menu shortcuts named `DeepSeek Harness`. The generated `DeepSeek Harness Setup <version>.exe` in `apps/desktop/dist` ships unsigned; Windows SmartScreen shows an unknown-publisher warning until a distribution certificate is configured.
+
+The root `build.sh` script wraps the packaging commands with workspace-link repair, a Node engine check, and the Electron binary download: `./build.sh` builds the NSIS installer, `./build.sh package` builds only the unpacked application, and `./build.sh dev` runs a source launch. Run it from the repository root in Git Bash; WSL works too when PATH has pnpm and Node `^22.19.0 || >=24.0.0`, which the script verifies before installing.
 ## Known limitations
 
 The first desktop assembly uses a loopback HTTP Host. The renderer and Host protocol remain unchanged so the application can replace the transport with the IPC carrier reserved by the GUI architecture without changing product features.

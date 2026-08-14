@@ -54,6 +54,11 @@ const SIGDN_FILESYSPATH = 0x80058000 | 0
 const DPI_AWARENESS_CONTEXTS = [-4, -3, -2]
 const WM_CLOSE = 0x10
 
+/** The one-time EnumThreadWindows callback proto: koffi's proto name registry is
+ * process-global, so re-creating the same name per call fails with
+ * `Duplicate type name` on the second close. */
+let enumProcProto: unknown | undefined
+
 /** IFileOpenDialog vtable slots (IUnknown 0-2, IModalWindow 3, IFileDialog 4+). */
 const SLOT_RELEASE = 2
 const SLOT_SHOW = 3
@@ -182,11 +187,11 @@ export async function closeThreadWindows(threadId: number): Promise<void> {
   const user32 = koffi.load('user32.dll')
   const enumThreadWindows = user32.func('__stdcall', 'EnumThreadWindows', 'int', ['uint32', 'void *', 'intptr'])
   const postMessageW = user32.func('__stdcall', 'PostMessageW', 'int', ['void *', 'uint32', 'uintptr', 'intptr'])
-  const protoEnumProc = koffi.proto('int __stdcall DshEnumThreadWndProc(void *hwnd, intptr lparam)')
+  enumProcProto ??= koffi.proto('int __stdcall DshEnumThreadWndProc(void *hwnd, intptr lparam)')
   const callback = koffi.register((hwnd: unknown) => {
     postMessageW(hwnd, WM_CLOSE, 0, 0)
     return 1
-  }, koffi.pointer(protoEnumProc))
+  }, koffi.pointer(enumProcProto))
   try {
     enumThreadWindows(threadId, callback, 0)
   } finally {
