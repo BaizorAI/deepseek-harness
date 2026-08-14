@@ -85,8 +85,16 @@ async function restoreLegacyHoists(): Promise<void> {
 async function deploy(): Promise<void> {
   const savedWorkspaceState = existsSync(workspaceState) ? await readFile(workspaceState) : undefined
   try {
-    await run(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', [
-      '--config.verify-deps-before-run=false', '--filter', deployPackage, 'deploy', '--legacy', '--prod',
+    const pnpmEntrypoint = process.env.npm_execpath
+    if (pnpmEntrypoint === undefined || pnpmEntrypoint === '') {
+      throw new Error('desktop runtime staging requires npm_execpath; invoke the stager through a pnpm package script')
+    }
+    // Windows cannot spawn the pnpm.cmd shim directly; the JavaScript
+    // entrypoint keeps the deploy shell-free on every platform.
+    await run(process.execPath, [
+      pnpmEntrypoint,
+      '--config.verify-deps-before-run=false', '--config.allowUnusedPatches=true',
+      '--filter', deployPackage, 'deploy', '--legacy', '--prod',
       '--config.node-linker=hoisted', '--config.auto-install-peers=false', '--config.link-workspace-packages=true', staging,
     ])
   } finally {

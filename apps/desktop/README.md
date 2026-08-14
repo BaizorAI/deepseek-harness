@@ -66,11 +66,20 @@ hdiutil detach "$MOUNT_POINT"
 rmdir "$MOUNT_POINT"
 ```
 
+## Windows NSIS installer
+
+The Windows distribution command builds an assisted per-user NSIS installer after the complete repository build and Host staging:
+
+```sh
+pnpm run dist:win:desktop
+```
+
+The installer defaults to a per-user install, offers an install-mode page and a directory-choice step, elevates only when the chosen mode or directory requires it, and creates desktop and Start Menu shortcuts named `DeepSeek Harness`. The generated `DeepSeek Harness Setup <version>.exe` in `apps/desktop/dist` ships unsigned; Windows SmartScreen shows an unknown-publisher warning until a distribution certificate is configured.
 ## Known limitations
 
 The first desktop assembly uses a loopback HTTP Host. The renderer and Host protocol remain unchanged so the application can replace the transport with the IPC carrier reserved by the GUI architecture without changing product features.
 
-The signed installer path currently targets macOS. Windows and Linux packaging creates unpacked applications; their installer formats and distribution signing remain release work.
+The signed installer path currently targets macOS. The Windows installer builds from the same packaging entry but ships unsigned, so SmartScreen shows an unknown-publisher warning until a distribution certificate is configured. Linux packaging creates an unpacked application; its installer format and distribution signing remain release work.
 
 ## Model Experience
 

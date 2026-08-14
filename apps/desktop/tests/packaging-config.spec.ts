@@ -18,7 +18,11 @@ interface DesktopPackage {
       readonly icon: string
       readonly notarize: boolean
     }
-    readonly win: { readonly icon: string }
+    readonly nsis: { readonly oneClick: boolean }
+    readonly win: {
+      readonly icon: string
+      readonly target: readonly string[]
+    }
   }
 }
 
@@ -33,6 +37,7 @@ const builderPatch = readFileSync(resolve(repositoryRoot, 'patches/app-builder-l
 const desktopPackage = JSON.parse(
   readFileSync(resolve(desktopRoot, 'package.json'), 'utf8'),
 ) as DesktopPackage
+const stageRuntimeSource = readFileSync(resolve(desktopRoot, 'scripts/stage-runtime.ts'), 'utf8')
 const rootPackage = JSON.parse(
   readFileSync(resolve(repositoryRoot, 'package.json'), 'utf8'),
 ) as RootPackage
@@ -66,6 +71,26 @@ describe('desktop packaging configuration', () => {
       .toBe('e9fa2ac692491c051536fb5d322e7eefe874d3977892e82852295d137bf27d91')
     expect(desktopPackage.build.mac.icon).toBe('build/icon.png')
     expect(desktopPackage.build.win.icon).toBe('build/icon.png')
+  })
+
+  it('stages the Host through the shell-free pnpm entrypoint with the unused-patch allowance', () => {
+    expect(stageRuntimeSource).toContain('process.env.npm_execpath')
+    expect(stageRuntimeSource).toContain("'--config.allowUnusedPatches=true'")
+    expect(stageRuntimeSource).not.toContain("'pnpm.cmd'")
+  })
+
+  it('ships a per-user assisted Windows installer built by the dist:win entry', () => {
+    expect(desktopPackage.build.win.target).toEqual(['nsis'])
+    expect(desktopPackage.build.nsis.oneClick).toBe(false)
+
+    const command = desktopPackage.scripts['dist:win']
+
+    expect(command).toContain('pnpm --workspace-root run build')
+    expect(command).toContain('scripts/stage-runtime.ts')
+    expect(command).toContain('electron-builder --win nsis')
+    expect(command).not.toContain('release-preflight.ts')
+    expect(rootPackage.scripts['dist:win:desktop'])
+      .toBe('pnpm --filter @deepseek-ai/dsh-desktop run dist:win')
   })
 
   it('builds and stages the complete workspace before local packaging', () => {

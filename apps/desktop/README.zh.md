@@ -66,11 +66,20 @@ hdiutil detach "$MOUNT_POINT"
 rmdir "$MOUNT_POINT"
 ```
 
+## Windows NSIS 安装程序
+
+Windows 发布命令在完整仓库构建与 Host 暂存之后，构建一个助手式、按用户安装的 NSIS 安装程序：
+
+```sh
+pnpm run dist:win:desktop
+```
+
+安装程序默认按当前用户安装，提供安装模式选择页面与目录选择步骤，仅在所选模式或目录需要时申请提权，同时创建名为 `DeepSeek Harness` 的桌面与开始菜单快捷方式。生成的 `DeepSeek Harness Setup <版本>.exe` 位于 `apps/desktop/dist`，发布时未签名；配置发布证书之前，Windows SmartScreen 会提示发布者未知。
 ## 已知限制
 
 首个桌面装配使用回环 HTTP Host。renderer 和 Host 协议保持不变，因此后续可替换为 GUI 架构预留的 IPC carrier，而无需改动产品功能。
 
-已签名安装包的发布路径目前只面向 macOS。Windows 和 Linux 打包会生成未封装应用；它们的安装包格式与发布签名仍属于发布工作。
+已签名安装包的发布路径目前只面向 macOS。Windows 安装程序从同一打包入口构建，但发布时未签名，因此在配置发布证书之前，SmartScreen 会提示发布者未知。Linux 打包会生成未封装应用；它的安装包格式与发布签名仍属于发布工作。
 
 ## 模型体验
 

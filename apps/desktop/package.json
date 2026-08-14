@@ -11,6 +11,7 @@
     "dev": "pnpm --workspace-root run build && electron .",
     "package": "pnpm --workspace-root run build && node --import tsx scripts/stage-runtime.ts && electron-builder --dir",
     "dist": "pnpm --workspace-root run build && node --import tsx scripts/stage-runtime.ts && electron-builder",
+    "dist:win": "pnpm --workspace-root run build && node --import tsx scripts/stage-runtime.ts && electron-builder --win nsis",
     "dist:mac": "node --import tsx scripts/release-mac.ts"
   },
   "license": "MIT",
@@ -55,10 +56,19 @@
         "dir"
       ]
     },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "DeepSeek Harness"
+    },
     "win": {
       "icon": "build/icon.png",
       "target": [
-        "dir"
+        "nsis"
       ]
     },
     "linux": {
