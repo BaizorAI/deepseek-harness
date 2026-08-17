@@ -28,6 +28,9 @@
       "path": "../../extensions/cordis-host-runner"
     },
     {
+      "path": "../../extensions/baizor-auth"
+    },
+    {
       "path": "../../goal/goal"
     },
     {

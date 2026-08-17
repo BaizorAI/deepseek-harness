@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Baizor login badge > renders the wide badge above Settings in the default zh locale 1`] = `
+<div
+  data-slot="sidebar.footer.action"
+  style="display: contents;"
+>
+  <div
+    class="layer"
+  >
+    <div
+      class="footerButtons"
+    >
+      <button
+        aria-label="白泽AI登录（Baizor AI Login）"
+        class="badge"
+        data-baizor-login="true"
+        type="button"
+      >
+        <svg
+          data-content="f23fa4b8"
+          fill="none"
+          height="14"
+          viewBox="0 0 14 14"
+          width="14"
+          xmlns="http://www.w3.org/2000/svg"
+        />
+        <span
+          class="badgeLabel"
+        >
+          白泽AI登录
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

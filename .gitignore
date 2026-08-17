@@ -42,3 +42,5 @@ worktrees/
 .typert-*/
 .*.log
 .smoke-profile/
+*.log
+.tmp/

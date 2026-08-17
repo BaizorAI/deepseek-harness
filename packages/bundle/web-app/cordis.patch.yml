@@ -102,6 +102,11 @@
     - id: cordis-host-runner
       name: '@deepseek-ai/dsh-cordis-host-runner'
 
+    # Baizor AI browser login: the device-flow host service the sidebar
+    # button drives. One login at a time; the key never reaches the browser.
+    - id: baizor-auth
+      name: '@deepseek-ai/dsh-baizor-auth'
+
     # Ordinary provider for the parsed Web flags. Its plugin-level injection
     # waits for cmdlineArgs; no launcher metadata or special row kind is needed.
     - id: web-startup
@@ -204,6 +209,11 @@
 
     - id: ui-cordis
       name: '@deepseek-ai/dsh-client-ui-cordis'
+
+    # Baizor AI login button: the footer action above Settings that opens the
+    # sign-in page and waits on the baizorAuth host poll.
+    - id: ui-baizor-login
+      name: '@deepseek-ai/dsh-client-ui-baizor-login'
 
     # Durable workflow lifecycle as an independent Chat node after the
     # existing generic workflow tool row.

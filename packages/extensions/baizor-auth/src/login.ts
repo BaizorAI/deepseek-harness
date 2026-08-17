@@ -48,13 +48,21 @@ export interface LoginDirection {
   timer: LoginTimer
 }
 
+/** The timer schedule the poll loop reads and sleeps against. */
 export interface LoginTimerSource {
+  /** Milliseconds between two poll attempts. */
   interval(): number
+  /** Milliseconds until the whole flow fails as timed out. */
   deadline(): number
+  /** Pause for one poll interval. */
   sleep(ms: number): Promise<void>
 }
 
-/** The production timer source over the login schedule. */
+/**
+ * The production timer source over the login schedule.
+ * @param timer - the schedule whose interval and deadline the source exposes.
+ * @returns a timer source reading the schedule and sleeping on wall-clock timeouts.
+ */
 export function timerSourceOf(timer: LoginTimer): LoginTimerSource {
   return {
     interval: () => timer.intervalMs,
