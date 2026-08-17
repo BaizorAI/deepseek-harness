@@ -36,3 +36,5 @@ Onboarding now ends for reasons the DeepSeek route knows nothing about, so the s
 ## Testing
 
 Package tests pin `providerUsable` over the four join states and `onboardingReadiness` over both the new gate and every surviving diagnostic; the section tests cover the first-run posture, the plain-row posture, and the cancel that collapses the setup card while the add card keeps its draft. The `onboarding-usable-provider` web e2e lane replays the whole scenario through the real wire: cancel with both cards open, configure `minimax-cn` instead, reload, and find no takeover — with one aria golden of the dismissed state.
+
+The onboarding half is superseded by the [first-run onboarding dialogs removal](../simplification/2026-08-17-remove-first-run-onboarding-dialogs.md); the Models-page setup-card half remains current.

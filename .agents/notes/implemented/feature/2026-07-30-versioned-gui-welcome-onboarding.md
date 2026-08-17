@@ -31,3 +31,5 @@ The GUI's credential onboarding begins with a DeepSeek-specific readiness check,
 ## Consequences
 
 A fresh profile sees the current testing-stage notice, then the conditional DeepSeek key dialog when no provider is usable. Focused store and React tests pin exact-version acknowledgement, coordinator ordering, conditional transfer, shared modal behavior, and HMR cleanup. The real Chromium scenario boots the shipped Web composition with an isolated harness home, verifies both dialogs, writes the key through the existing credential boundary, and checks that no secret reaches the DOM, ARIA, or browser console.
+
+Superseded by the [first-run onboarding dialogs removal](../simplification/2026-08-17-remove-first-run-onboarding-dialogs.md); the slot and the durable namespace remain, but no shipped step registers into them.

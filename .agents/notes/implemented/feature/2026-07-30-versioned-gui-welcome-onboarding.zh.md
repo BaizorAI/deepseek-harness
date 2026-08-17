@@ -31,3 +31,5 @@ GUI 的凭据引导从 DeepSeek 专用的就绪状态检查开始，但内部测
 ## 后果
 
 全新 profile 会先看到当前测试阶段声明；当没有任何可用提供方时，再看到条件式 DeepSeek 密钥弹窗。定向 store 与 React 测试固定精确版本确认、协调器顺序、条件式移交、共用弹窗行为与 HMR 清理。真实 Chromium 场景会在隔离的 harness 家目录下启动已发布 Web 组合，验证两个弹窗，通过既有凭据边界写入密钥，并检查 secret 未进入 DOM、ARIA 或浏览器控制台。
+
+已被 [首次运行引导对话框移除](../simplification/2026-08-17-remove-first-run-onboarding-dialogs.md) 取代；slot 与持久化 namespace 保留，但不再有出厂步骤注册其中。

@@ -36,3 +36,5 @@ Status: implemented
 ## Testing
 
 包内测试针对四种联接状态钉住 `providerUsable`，并针对新门槛与每一个存留的诊断钉住 `onboardingReadiness`；分区测试覆盖首次运行姿态、普通行姿态，以及在新增卡保住草稿的同时折叠设置卡片的那次取消。`onboarding-usable-provider` web e2e 泳道通过真实协议重放整个场景：两张卡片都开着时取消、改配 `minimax-cn`、重载，然后不再出现接管——并附一份关闭后状态的 aria golden。
+
+引导那一半已被 [首次运行引导对话框移除](../simplification/2026-08-17-remove-first-run-onboarding-dialogs.md) 取代；Models 页设置卡那一半仍然有效。
