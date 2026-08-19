@@ -273,6 +273,7 @@
     { "path": "./packages/guard/repeat-tool-reminder" },
     { "path": "./packages/extensions/cordis-host-runner" },
     { "path": "./packages/extensions/baizor-auth" },
+    { "path": "./packages/extensions/studio-client" },
     { "path": "./packages/extensions/tool-cordis" },
     { "path": "./packages/hooks/hook-protocol" },
     { "path": "./packages/hooks/hooks-claude-code" },

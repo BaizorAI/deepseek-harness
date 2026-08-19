@@ -1,6 +1,6 @@
 {
-  "name": "@deepseek-ai/dsh-client-ui-baizor-login",
-  "description": "Baizor AI login button: a sidebar footer action above Settings that runs the host baizorAuth device flow in the browser",
+  "name": "@deepseek-ai/dsh-client-ui-studio-workshop",
+  "description": "Baizor Studio workshop placeholder: a sidebar footer action that shows the login state, server capabilities, project list, and one project's stage/task snapshot",
   "version": "0.1.0-rc.5",
   "publishConfig": {
     "access": "public"
@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
-    "directory": "packages/extensions/ui-baizor-login"
+    "directory": "packages/extensions/ui-studio-workshop"
   },
   "type": "module",
   "main": "lib/index.js",
@@ -49,25 +49,25 @@
   "peerDependencies": {
     "@deepseek-ai/cordis": "workspace:^",
     "@deepseek-ai/dsh-api-remotes": "workspace:^",
-    "@deepseek-ai/dsh-baizor-auth": "workspace:^",
     "@deepseek-ai/dsh-client-locale": "workspace:^",
     "@deepseek-ai/dsh-client-runtime": "workspace:^",
     "@deepseek-ai/dsh-client-ui-primitives": "workspace:^",
     "@deepseek-ai/dsh-client-ui-sidebar": "workspace:^",
     "@deepseek-ai/dsh-client-ui-slots": "workspace:^",
     "@deepseek-ai/dsh-invariants": "workspace:^",
+    "@deepseek-ai/dsh-studio-client": "workspace:^",
     "react": "^18.2.0"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "workspace:^",
     "@deepseek-ai/dsh-api-remotes": "workspace:^",
-    "@deepseek-ai/dsh-baizor-auth": "workspace:^",
     "@deepseek-ai/dsh-client-locale": "workspace:^",
     "@deepseek-ai/dsh-client-runtime": "workspace:^",
     "@deepseek-ai/dsh-client-ui-primitives": "workspace:^",
     "@deepseek-ai/dsh-client-ui-sidebar": "workspace:^",
     "@deepseek-ai/dsh-client-ui-slots": "workspace:^",
     "@deepseek-ai/dsh-invariants": "workspace:^",
+    "@deepseek-ai/dsh-studio-client": "workspace:^",
     "@types/react": "~18.3.1",
     "react": "^18.2.0"
   },

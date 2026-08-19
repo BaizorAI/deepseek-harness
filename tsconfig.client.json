@@ -26,6 +26,7 @@
     // Client package outside packages/client with a local CSS module face.
     "packages/extensions/ui-cordis/src/css-modules.d.ts",
     "packages/extensions/ui-baizor-login/src/css-modules.d.ts",
+    "packages/extensions/ui-studio-workshop/src/css-modules.d.ts",
     "packages/client/tsdown.client.ts",
     "scripts/client-bundle-css.spec.ts",
     "scripts/client-bundle-purity.spec.ts"
@@ -63,6 +64,7 @@
     { "path": "./packages/extensions/cordis-client-runner" },
     { "path": "./packages/extensions/ui-cordis" },
     { "path": "./packages/extensions/ui-baizor-login" },
+    { "path": "./packages/extensions/ui-studio-workshop" },
     { "path": "./packages/test-support/client-runtime" },
     { "path": "./packages/client/ui-layout" },
     { "path": "./packages/client/ui-sidebar" },

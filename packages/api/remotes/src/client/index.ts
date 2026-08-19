@@ -7,6 +7,7 @@ import dynamicRemote from '@deepseek-ai/dsh-cordis-host-runner/remote'
 import pluginInventoryRemote from '@deepseek-ai/dsh-host-plugin-inventory/remote'
 import messageFeedbackRemote from '@deepseek-ai/dsh-message-feedback/remote'
 import baizorAuthRemote from '@deepseek-ai/dsh-baizor-auth/remote'
+import studioClientRemote from '@deepseek-ai/dsh-studio-client/remote'
 import type { TypertClientRemote } from '@deepseek-ai/dsh-typert-protocol'
 
 export type { TypertClientRemote as ClientRemote } from '@deepseek-ai/dsh-typert-protocol'
@@ -16,6 +17,7 @@ export type {} from '@deepseek-ai/dsh-goal/remote'
 export type {} from '@deepseek-ai/dsh-host-plugin-inventory/remote'
 export type {} from '@deepseek-ai/dsh-message-feedback/remote'
 export type {} from '@deepseek-ai/dsh-baizor-auth/remote'
+export type {} from '@deepseek-ai/dsh-studio-client/remote'
 // The forwarded-event allowlist's selection seat: without it in the consumer's
 // compilation face `TypertRemoteEvent` is `never` and every `$on` call fails.
 export type { ApiRemoteForwardedEvent } from '../types.ts'
@@ -34,6 +36,13 @@ export type {} from '@deepseek-ai/dsh-settings/types'
 export type {
   BaizorLoginReceipt, BaizorLoginResult, BaizorLoginStart, BaizorModelInfo, LoginTimer,
 } from '@deepseek-ai/dsh-baizor-auth/types'
+
+// The Studio client payload vocabulary, so the workshop surface names what it
+// sends and receives without importing a Host package.
+export type {
+  StudioCapabilities, StudioClientErrorCode, StudioClientResult, StudioProject,
+  StudioProjectPage, StudioRenderJobSummary, StudioSnapshot, StudioStage,
+} from '@deepseek-ai/dsh-studio-client/types'
 
 /**
  * The carrier's Client-facing types, re-exported so a business package names one
@@ -115,7 +124,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
   try {
     for (const contribution of [
       commandsRemote, goalsRemote, dynamicRemote, pluginInventoryRemote, messageFeedbackRemote,
-      baizorAuthRemote,
+      baizorAuthRemote, studioClientRemote,
     ]) {
       disposers.push(await ctx.remote.$mount(contribution))
     }

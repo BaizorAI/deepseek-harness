@@ -73,6 +73,7 @@
     },
     "linux": {
       "category": "Development",
+      "executableName": "deepseek-harness",
       "target": [
         "dir"
       ]

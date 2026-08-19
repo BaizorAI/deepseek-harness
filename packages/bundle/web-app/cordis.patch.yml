@@ -107,6 +107,12 @@
     - id: baizor-auth
       name: '@deepseek-ai/dsh-baizor-auth'
 
+    # Baizor Studio client: typed host-side access to the new-api Studio
+    # Client API. The key is re-resolved from the credential store per call
+    # and never crosses the wire to the browser.
+    - id: studio-client
+      name: '@deepseek-ai/dsh-studio-client'
+
     # Ordinary provider for the parsed Web flags. Its plugin-level injection
     # waits for cmdlineArgs; no launcher metadata or special row kind is needed.
     - id: web-startup
@@ -214,6 +220,11 @@
     # sign-in page and waits on the baizorAuth host poll.
     - id: ui-baizor-login
       name: '@deepseek-ai/dsh-client-ui-baizor-login'
+
+    # Baizor Studio workshop placeholder: the footer action that reads the
+    # studioClient host Remote — login state, capabilities, projects, snapshot.
+    - id: ui-studio-workshop
+      name: '@deepseek-ai/dsh-client-ui-studio-workshop'
 
     # Durable workflow lifecycle as an independent Chat node after the
     # existing generic workflow tool row.

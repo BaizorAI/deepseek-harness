@@ -17,7 +17,7 @@ export type { BaizorLoginFace, BaizorLoginRun } from './slots.ts'
 export type { BaizorLoginKey } from './locales.ts'
 
 /** Required services for the sidebar footer action and the baizorAuth Remote. */
-export const inject = ['slots', 'locale', 'remote', 'remote.baizorAuth']
+export const inject = ['slots', 'locale', 'remote', 'remote.baizorAuth', 'remote.studioClient']
 
 /** Mount the Baizor login badge above Settings in the sidebar footer. */
 export function apply(ctx: ClientContext): void {
@@ -52,8 +52,17 @@ export function apply(ctx: ClientContext): void {
             timeoutMs: direction.loginTimeoutMs,
           },
           settle: answered.then((result) => {
-            if (result.ok) return result.value
-            return { ok: false, message: result.error.message }
+            const outcome = result.ok ? result.value : { ok: false as const, message: result.error.message }
+            if (outcome.ok) {
+              // Advisory Studio capability probe: warms the workshop surface and
+              // surfaces an unavailable Studio early. The login outcome never
+              // depends on it, so a refusal or a transport failure stays silent.
+              void ctx.remote.studioClient.capabilities().then(
+                () => undefined,
+                () => undefined,
+              )
+            }
+            return outcome
           }),
         }
       },

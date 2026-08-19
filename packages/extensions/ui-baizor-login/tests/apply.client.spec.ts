@@ -10,6 +10,7 @@ import { BaizorLogin } from '../src/client/BaizorLogin.tsx'
 import type { BaizorLoginFace } from '../src/client/slots.ts'
 import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
 import type { BaizorLoginResult, BaizorLoginStart } from '@deepseek-ai/dsh-baizor-auth/types'
+import type { StudioCapabilities, StudioClientResult } from '@deepseek-ai/dsh-studio-client/types'
 
 // The service reads its initial locale from the browser; these specs assert
 // the shipped Chinese copy, so they state the browser they assume.
@@ -22,8 +23,12 @@ async function bench(declare = true) {
     start: vi.fn<() => Promise<RemoteResult<BaizorLoginStart>>>(async () => ({ ok: true, value: { ok: true, loginUrl: 'https://baizor.com/code/token?token=t', pollIntervalMs: 2000, loginTimeoutMs: 300_000 } })),
     finish: vi.fn<() => Promise<RemoteResult<BaizorLoginResult>>>(async () => ({ ok: true, value: { ok: true } })),
   }
-  ctx.provide('remote', { baizorAuth: namespace, $on: () => () => {} })
+  const studio = {
+    capabilities: vi.fn<() => Promise<RemoteResult<StudioClientResult<StudioCapabilities>>>>(async () => ({ ok: true, value: { ok: false, code: 'NOT_LOGGED_IN', message: 'no key yet' } })),
+  }
+  ctx.provide('remote', { baizorAuth: namespace, studioClient: studio, $on: () => () => {} })
   ctx.provide('remote.baizorAuth', namespace)
+  ctx.provide('remote.studioClient', studio)
   ctx.provide('locale', new LocaleRuntime(ctx))
   const slots = ctx.get('slots') as SlotRegistry
   if (declare) {
@@ -34,12 +39,12 @@ async function bench(declare = true) {
   }
   const open = vi.fn(() => null)
   Object.defineProperty(window, 'open', { configurable: true, value: open })
-  return { ctx, slots, namespace, open }
+  return { ctx, slots, namespace, studio, open }
 }
 
 describe('ui-baizor-login apply', () => {
   it('declares only the services it uses', () => {
-    expect(inject).toEqual(['slots', 'locale', 'remote', 'remote.baizorAuth'])
+    expect(inject).toEqual(['slots', 'locale', 'remote', 'remote.baizorAuth', 'remote.studioClient'])
   })
 
   it('registers the badge above Settings as a sidebar footer action', async () => {
@@ -92,6 +97,36 @@ describe('ui-baizor-login apply', () => {
     expect(b.open).not.toHaveBeenCalled()
     expect(b.namespace.finish).not.toHaveBeenCalled()
     await expect(flow.settle).resolves.toEqual({ ok: false, message: 'a Baizor login is already running' })
+  })
+
+  it('probes the Studio capabilities once the poll settles with a login', async () => {
+    const b = await bench()
+    await b.ctx.plugin({ inject: [...inject], apply }).await()
+    const face = (b.slots.entries('sidebar.footer.action')[0]!.inject as unknown as () => BaizorLoginFace)()
+    const flow = await face.run()
+    await expect(flow.settle).resolves.toEqual({ ok: true })
+    await vi.waitFor(() => { expect(b.studio.capabilities).toHaveBeenCalledOnce() })
+  })
+
+  it('keeps the login outcome when the Studio probe refuses or fails', async () => {
+    const b = await bench()
+    b.studio.capabilities.mockRejectedValue(new Error('studio unreachable'))
+    await b.ctx.plugin({ inject: [...inject], apply }).await()
+    const face = (b.slots.entries('sidebar.footer.action')[0]!.inject as unknown as () => BaizorLoginFace)()
+    const flow = await face.run()
+    await expect(flow.settle).resolves.toEqual({ ok: true })
+    await vi.waitFor(() => { expect(b.studio.capabilities).toHaveBeenCalledOnce() })
+  })
+
+  it('skips the Studio probe when the login fails', async () => {
+    const b = await bench()
+    b.namespace.finish.mockResolvedValue({ ok: true, value: { ok: false, message: 'login timed out' } })
+    await b.ctx.plugin({ inject: [...inject], apply }).await()
+    const face = (b.slots.entries('sidebar.footer.action')[0]!.inject as unknown as () => BaizorLoginFace)()
+    const flow = await face.run()
+    await expect(flow.settle).resolves.toEqual({ ok: false, message: 'login timed out' })
+    await Promise.resolve()
+    expect(b.studio.capabilities).not.toHaveBeenCalled()
   })
 
   it('removes the entry and dictionaries with the fiber', async () => {

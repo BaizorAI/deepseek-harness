@@ -12,6 +12,9 @@ import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
 import { apply, inject } from '@deepseek-ai/dsh-client-ui-baizor-login/client'
 import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
 import type { BaizorLoginResult, BaizorLoginStart } from '@deepseek-ai/dsh-baizor-auth/types'
+import type {
+  StudioCapabilities, StudioClientResult, StudioProjectPage, StudioSnapshot,
+} from '@deepseek-ai/dsh-studio-client/types'
 
 usePinnedBrowserLanguages('zh-CN')
 
@@ -27,8 +30,21 @@ async function bench() {
     })),
     finish: vi.fn<() => Promise<RemoteResult<BaizorLoginResult>>>(async () => ({ ok: true, value: await settle })),
   }
-  runtime.provide('remote', { baizorAuth: namespace, $on: () => () => {} })
+  const notLoggedIn = { ok: false as const, code: 'NOT_LOGGED_IN' as const, message: 'no key yet' }
+  type AsyncResult<T> = () => Promise<RemoteResult<StudioClientResult<T>>>
+  type AsyncSnapshotResult = (projectRef: string) => Promise<RemoteResult<StudioClientResult<StudioSnapshot>>>
+  const studio = {
+    capabilities: vi.fn<AsyncResult<StudioCapabilities>>(async () => ({ ok: true, value: notLoggedIn })),
+    projects: vi.fn<AsyncResult<StudioProjectPage>>(async () => ({ ok: true, value: notLoggedIn })),
+    snapshot: vi.fn<AsyncSnapshotResult>(async () => ({ ok: true, value: notLoggedIn })),
+    createAction: vi.fn(async () => ({ ok: true as const, value: notLoggedIn })),
+    tasks: vi.fn(async () => ({ ok: true as const, value: notLoggedIn })),
+    task: vi.fn(async () => ({ ok: true as const, value: notLoggedIn })),
+    render: vi.fn(async () => ({ ok: true as const, value: notLoggedIn })),
+  }
+  runtime.provide('remote', { baizorAuth: namespace, studioClient: studio, $on: () => () => {} })
   runtime.provide('remote.baizorAuth', namespace)
+  runtime.provide('remote.studioClient', studio)
   const locale = new LocaleRuntime(runtime.ctx)
   runtime.provide('locale', locale)
   runtime.slots.installLocale(locale)
@@ -55,7 +71,7 @@ describe('Baizor login badge', () => {
       slot.view.getByRole('button', { name: '白泽AI登录（Baizor AI Login）' }).click()
     })
     expect(namespace.start).toHaveBeenCalledOnce()
-    await waitFor(() => expect(namespace.finish).toHaveBeenCalledOnce())
+    await waitFor(() => { expect(namespace.finish).toHaveBeenCalledOnce() })
     expect(open).toHaveBeenCalledWith('https://baizor.com/code/token?token=t', '_blank', 'noopener,noreferrer')
     expect(screen.getByRole('dialog', { name: '白泽 AI 登录' })).toBeTruthy()
     expect(screen.getByText(/等待浏览器授权/)).toBeTruthy()
