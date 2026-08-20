@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-desktop-runtime",
+  "name": "@baizor-ai/lingshu-desktop-runtime",
   "description": "Dependency-only deploy root for the packaged desktop Host",
   "version": "0.0.0",
   "private": true,

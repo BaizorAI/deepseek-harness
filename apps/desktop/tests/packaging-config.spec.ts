@@ -90,7 +90,7 @@ describe('desktop packaging configuration', () => {
     expect(command).toContain('electron-builder --win nsis')
     expect(command).not.toContain('release-preflight.ts')
     expect(rootPackage.scripts['dist:win:desktop'])
-      .toBe('pnpm --filter @deepseek-ai/dsh-desktop run dist:win')
+      .toBe('pnpm --filter @baizor-ai/lingshu-desktop run dist:win')
   })
 
   it('builds and stages the complete workspace before local packaging', () => {
@@ -112,8 +112,8 @@ describe('desktop packaging configuration', () => {
 
   it('exposes generic and macOS release commands at the repository root', () => {
     expect(rootPackage.scripts['dist:desktop'])
-      .toBe('pnpm --filter @deepseek-ai/dsh-desktop run dist')
+      .toBe('pnpm --filter @baizor-ai/lingshu-desktop run dist')
     expect(rootPackage.scripts['dist:mac:desktop'])
-      .toBe('pnpm --filter @deepseek-ai/dsh-desktop run dist:mac')
+      .toBe('pnpm --filter @baizor-ai/lingshu-desktop run dist:mac')
   })
 })

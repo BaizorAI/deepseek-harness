@@ -1,6 +1,6 @@
 {
-  "name": "@deepseek-ai/dsh-desktop",
-  "description": "DeepSeek Harness desktop application with tray-owned Host lifecycle",
+  "name": "@baizor-ai/lingshu-desktop",
+  "description": "灵枢AIGC影视创作平台 desktop application with tray-owned Host lifecycle",
   "version": "0.1.0-rc.7",
   "private": true,
   "type": "module",
@@ -24,8 +24,8 @@
     "vitest": "^4.1.8"
   },
   "build": {
-    "appId": "ai.deepseek.harness.desktop",
-    "productName": "DeepSeek Harness",
+    "appId": "ai.baizor.lingshu.desktop",
+    "productName": "灵枢AIGC影视创作平台",
     "electronDist": "node_modules/electron/dist",
     "afterPack": "./scripts/verify-packaged-runtime.ts",
     "asar": true,
@@ -63,7 +63,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
-      "shortcutName": "DeepSeek Harness"
+      "shortcutName": "灵枢AIGC影视创作平台"
     },
     "win": {
       "icon": "build/icon.png",
@@ -73,7 +73,7 @@
     },
     "linux": {
       "category": "Development",
-      "executableName": "deepseek-harness",
+      "executableName": "lingshu-desktop",
       "target": [
         "dir"
       ]

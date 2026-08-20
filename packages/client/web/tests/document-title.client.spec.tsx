@@ -10,19 +10,19 @@ afterEach(() => {
 
 describe('DocumentTitle', () => {
   it('preserves the product title without a durable title and restores it on unmount', () => {
-    document.title = 'DeepSeek Harness'
+    document.title = '灵枢AIGC影视创作平台'
     const mounted = render(<DocumentTitle />)
-    expect(document.title).toBe('DeepSeek Harness')
+    expect(document.title).toBe('灵枢AIGC影视创作平台')
 
     mounted.rerender(<DocumentTitle title="First title" />)
-    expect(document.title).toBe('First title — DeepSeek Harness')
+    expect(document.title).toBe('First title — 灵枢AIGC影视创作平台')
 
     mounted.rerender(<DocumentTitle title="Revised title" />)
-    expect(document.title).toBe('Revised title — DeepSeek Harness')
+    expect(document.title).toBe('Revised title — 灵枢AIGC影视创作平台')
 
     mounted.rerender(<DocumentTitle />)
-    expect(document.title).toBe('DeepSeek Harness')
+    expect(document.title).toBe('灵枢AIGC影视创作平台')
     mounted.unmount()
-    expect(document.title).toBe('DeepSeek Harness')
+    expect(document.title).toBe('灵枢AIGC影视创作平台')
   })
 })

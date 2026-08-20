@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "DeepSeek Harness",
-  "short_name": "DSH",
+  "name": "灵枢AIGC影视创作平台",
+  "short_name": "灵枢",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",

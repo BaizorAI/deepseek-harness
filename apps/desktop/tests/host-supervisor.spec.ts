@@ -292,15 +292,15 @@ describe('desktop Host process', () => {
 
     const { spawnDshWeb } = await import('../src/host-supervisor.ts')
     spawnDshWeb({
-      nodeExecutable: '/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness',
-      cliEntry: '/Applications/DeepSeek Harness.app/Contents/Resources/host/node_modules/@deepseek-ai/dsh/lib/bin.js',
+      nodeExecutable: '/Applications/灵枢AIGC影视创作平台.app/Contents/MacOS/灵枢AIGC影视创作平台',
+      cliEntry: '/Applications/灵枢AIGC影视创作平台.app/Contents/Resources/host/node_modules/@deepseek-ai/dsh/lib/bin.js',
       cwd: '/Users/tester',
       env: { DSH_DESKTOP: '1' },
       electronRunAsNode: true,
     })
 
     expect(spawn).toHaveBeenCalledWith(
-      '/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness',
+      '/Applications/灵枢AIGC影视创作平台.app/Contents/MacOS/灵枢AIGC影视创作平台',
       ['--expose-internals', expect.stringContaining('/Resources/host/node_modules/@deepseek-ai/dsh/lib/bin.js'), 'web', '--host', '127.0.0.1', '--port', '0'],
       expect.objectContaining({ env: { DSH_DESKTOP: '1', ELECTRON_RUN_AS_NODE: '1' } }),
     )
